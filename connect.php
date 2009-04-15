@@ -1,10 +1,8 @@
 <?php
-
 /**
  * @file
  * Get a request token from twitter and present authorization URL to user
  */
-
 /* Start session and load lib */
 session_start();
 require_once('twitteroauth/twitteroauth.php');
@@ -18,7 +16,13 @@ switch ($_SESSION['oauth_status']) {
 }
 
 /* Create TwitterOAuth object and get request token */
-$connection = new TwitterOauth($consumer_key, $consumer_secret);
+$connection = new TwitterOAuth($consumer_key, $consumer_secret);
+/* Save consumer keys into TwitterOAuth object and SESSION for use on other pages */
+$connection->consumer_key = $_SESSION['consumer_key'] = 'CONSUMER_KEY_GOES_HERE';
+$connection->consumer_secret = $_SESSION['consumer_secret'] = 'CONSUMER_SECRET_GOES_HERE';
+
+/* Get request token */
+$request_token_array = $connection->getRequestToken();
 
 /* Save request token to session */
 $_SESSION['oauth_token'] = $token = $request_token_array['oauth_token'];
@@ -35,4 +39,6 @@ switch ($connection->last_http_status) {
     $content = 'Something went wrong please try again later.';
     break;
 }
+
+/* Include HTML to display on the page */
 include('html.inc');

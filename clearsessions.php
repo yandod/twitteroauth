@@ -8,7 +8,5 @@
 session_start();
 session_destroy();
 
-/* Require twitteroauth file */
-require_once('twitteroauth/twitteroauth.php');
 /* Redirect to page with the connect to Twitter option. */
-header('Location: '.$home_page.'/connect.php');
+header('Location: ./connect.php');

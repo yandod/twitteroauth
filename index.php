@@ -3,31 +3,43 @@
  * @file
  * User has successfully authenticated with Twitter. Access tokens saved to session and DB.
  */
-
 /* Load required lib files. */
 session_start();
 require_once('twitteroauth/twitteroauth.php');
+
+/* Home page. Change to the location  */
+$home_page = 'http://twitteroauth.labs.poseurtech.com';
+/* Callback URL */
+$oauth_callback = $home_page.'/callback.php';
 
 /* Get user access tokens out of the session. */
 $user_key = $_SESSION['access_token'];
 $user_secret = $_SESSION['access_token_secret'];
 
 /* If access tokens are not available redirect to connect page. */
-if (!isset($user_key) || !isset($user_key)) {
+if (empty($user_key) || empty($user_secret)) {
     header('Location: '.$home_page.'/clearsessions.php');
 }
 
 /* Create a TwitterOauth object with consumer/user tokens. */
-$connection = new TwitterOauth($consumer_key, $consumer_secret, $user_key, $user_secret);
+$connection = new TwitterOAuth($user_key, $user_secret);
+/* Save consumer keys into TwitterOAuth object. */
+$connection->consumer_key = $_SESSION['consumer_key'];
+$connection->consumer_secret = $_SESSION['consumer_secret'];
+
+/* This example get the xml feed. Ignore to get json. */
 $connection->return_format = 'xml';
+/* Add your application's consumer keys here */
+$connection->consumer_key = '';
+$connection->consumer_secret = '';
 
 /* Build menu */
 $menu = <<<END
-  <a href="$home_page/home.php">Test</a> |
-  <a href="$home_page/home.php?method=verify_credentials">Verify credentials</a> |
-  <a href="$home_page/home.php?method=get_public_timeline">Get public timeline</a> |
-  <a href="$home_page/home.php?method=get_replies">Get mentions</a> |
-  <a href="$home_page/home.php?method=get_direct_messages">Get direct messages</a>
+  <a href="$home_page/index.php">Test</a> |
+  <a href="$home_page/index.php?method=verify_credentials">Verify credentials</a> |
+  <a href="$home_page/index.php?method=get_public_timeline">Get public timeline</a> |
+  <a href="$home_page/index.php?method=get_replies">Get mentions</a> |
+  <a href="$home_page/index.php?method=get_direct_messages">Get direct messages</a>
   <hr />
 END;
 

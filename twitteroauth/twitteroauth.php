@@ -10,30 +10,27 @@ require_once('OAuth.php');
 require_once('poseurhttp.php');
 require_once('twitteroauth.methods.php');
 
-/* Home page */
-$home_page = 'http://twitteroauth.labs.poseurtech.com';
-/* Callback URL */
-$oauth_callback = $home_page.'/callback.php';
-/* Consumer key from Twitter */
-$consumer_key = '';
-/* Consumer secret from Twitter */
-$consumer_secret = '';
-
 /**
  * Twitter OAuth class
  */
 class TwitterOAuth extends PoseurHTTP {/*{{{*/
-
   /* Set up the API root URL */
   public $host = "https://twitter.com";
+  /* By default use json as the return data format. */
   public $return_format = 'json';
+  /* By default do not decode the returned data into an array */
   public $decode = FALSE;
+  /* Consumer key from Twitter */
+  private $consumer_key;
+  /* Consumer secret from Twitter */
+  private $consumer_secret;
 
   /**
    * Set API URLS
    */
   function requestTokenPath() { return '/oauth/request_token'; }
   function authorizeURL() { return '/oauth/authorize'; }
+  function authenticateURL() { return '/oauth/authenticate'; }
   function accessTokenURL() { return '/oauth/access_token'; }
 
   /**
@@ -45,9 +42,9 @@ class TwitterOAuth extends PoseurHTTP {/*{{{*/
   /**
    * construct TwitterOAuth object
    */
-  function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {/*{{{*/
+  function __construct($oauth_token = NULL, $oauth_token_secret = NULL) {/*{{{*/
     $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
-    $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
+    $this->consumer = new OAuthConsumer($this->consumer_key, $this->consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
       $this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
     } else {
@@ -77,6 +74,17 @@ class TwitterOAuth extends PoseurHTTP {/*{{{*/
     if (is_array($token)) $token = $token['oauth_token'];
     if (!empty($oauth_callback)) $oauth_callback = '&oauth_callback=' . $oauth_callback;
     return $this->host.$this->authorizeURL() .'?oauth_token=' . $token . $oauth_callback;
+  }/*}}}*/
+
+  /**
+   * Get the authenticate URL
+   *
+   * @returns a string
+   */
+  function getAuthenticateURL($token, $oauth_callback) {/*{{{*/
+    if (is_array($token)) $token = $token['oauth_token'];
+    if (!empty($oauth_callback)) $oauth_callback = '&oauth_callback=' . $oauth_callback;
+    return $this->host.$this->authenticateURL() .'?oauth_token=' . $token . $oauth_callback;
   }/*}}}*/
 
   /**

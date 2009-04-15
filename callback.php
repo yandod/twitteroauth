@@ -11,9 +11,9 @@ require_once('twitteroauth/twitteroauth.php');
 
 /* If the oauth_token is old redirect to the connect page. */
 $request_key = $_REQUEST['oauth_token'];
-if (isset($request_key) && $_SESSION['oauth_token'] !== $request_key) {
+if (isset($request_key) && !strcomp($_SESSION['oauth_token'], $request_key)) {
   $_SESSION['oauth_status'] = 'oldtoken';
-  header('Location: '.$home_page.'/connect.php');
+  header('Location: ./connect.php');
 }
 
 /* Create TwitteroAuth object with app key/secret and token key/secret from default phase */
@@ -36,9 +36,9 @@ unset($_SESSION['oauth_token_secret']);
 if (200 == $connection->last_http_status) {
   /* The user has been verified and the access tokens can be saved for future use */
   $_SESSION['status'] = 'verified';
-  header('Location: '.$home_page.'/home.php');
+  header('Location: ./index.php');
 } else {
   /* Save HTTP status for error dialog on connnect page.*/
   $_SESSION['status'] = $connection->last_http_status;
-  header('Location: '.$home_page.'/connect.php');
+  header('Location: ./connect.php');
 }
