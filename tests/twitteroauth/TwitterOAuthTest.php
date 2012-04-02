@@ -18,7 +18,7 @@ class TwitterOAuthTest extends PHPUnit_Framework_TestCase {
 	 * This method is called before a test is executed.
 	 */
 	protected function setUp() {
-		$this->object = new TwitterOAuth;
+		$this->object = new TwitterOAuth('HOGE','FUGA');
 	}
 
 	/**
@@ -30,33 +30,30 @@ class TwitterOAuthTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @todo Implement testAccessTokenURL().
+	 * check accessTokenURL property
 	 */
-	public function testAccessTokenURL() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
+	public function testAccessTokenURL() {	
+		$ret = $this->object->accessTokenURL();
+		$exp = 'https://api.twitter.com/oauth/access_token';
+		$this->assertEquals($exp, $ret, 'validate twitter api url.');
 	}
 
 	/**
-	 * @todo Implement testAuthenticateURL().
+	 * check authenticateURL property
 	 */
 	public function testAuthenticateURL() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
+		$ret = $this->object->authenticateURL();
+		$exp = 'https://api.twitter.com/oauth/authenticate';
+		$this->assertEquals($exp, $ret, 'validate twitter api url.');
 	}
 
 	/**
-	 * @todo Implement testAuthorizeURL().
+	 * check authorizeURL property
 	 */
 	public function testAuthorizeURL() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
+		$ret = $this->object->authorizeURL();
+		$exp = 'https://api.twitter.com/oauth/authorize';
+		$this->assertEquals($exp, $ret, 'validate twitter api url.');
 	}
 
 	/**
